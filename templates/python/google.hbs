@@ -1,0 +1,12 @@
+"""Summary.
+{{#if hasParams}}
+Args:
+{{#each params}}
+    {{name}}{{#if hasType}} ({{type}}){{/if}}: Description.
+{{/each}}
+{{/if}}
+{{#if hasReturn}}
+Returns:
+    {{returnType}}: Description.
+{{/if}}
+"""
