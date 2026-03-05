@@ -1,12 +1,79 @@
 {
   "name": "kutabe",
-  "displayName": "kutabe",
-  "description": "A VSCode extension to automatically generate documentation",
+  "displayName": "Kutabe",
+  "description": "Generate documentation from templates for Python, TypeScript, and Rust",
   "version": "0.0.1",
+  "categories": [
+    "Snippets",
+    "Programming Languages"
+  ],
   "engines": {
     "vscode": "^1.109.0"
   },
   "main": "./dist/extension.js",
+  "scripts": {
+    "build": "node esbuild.js",
+    "package": "node esbuild.js --production",
+    "lint": "eslint src/",
+    "test": "vscode-test"
+  },
+  "activationEvents": [
+    "onLanguage:python",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact",
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
+    "onLanguage:rust"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "kutabe.generateDocstring",
+        "title": "Kutabe: Generate Docstring"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "kutabe.generateDocstring",
+        "key": "ctrl+alt+d",
+        "mac": "cmd+alt+d",
+        "when": "editorTextFocus"
+      }
+    ],
+    "configuration": {
+      "title": "Kutabe Configuration",
+      "type": "object",
+      "properties": {
+        "kutabe.python.style": {
+          "type": "string",
+          "default": "google",
+          "enum": [
+            "google",
+            "numpy",
+            "sphinx"
+          ],
+          "description": "Docstring style for Python"
+        },
+        "kutabe.typescript.style": {
+          "type": "string",
+          "default": "jsdoc",
+          "enum": [
+            "jsdoc",
+            "tsdoc"
+          ],
+          "description": "Docstring style for TypeScript/JavaScript"
+        },
+        "kutabe.rust.style": {
+          "type": "string",
+          "default": "rustdoc",
+          "enum": [
+            "rustdoc"
+          ],
+          "description": "Docstring style for Rust"
+        }
+      }
+    }
+  },
   "devDependencies": {
     "@release-it/conventional-changelog": "^10.0.5",
     "@types/mocha": "^10.0.10",
