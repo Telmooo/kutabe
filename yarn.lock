@@ -3347,7 +3347,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"handlebars@npm:^4.7.7":
+"handlebars@npm:^4.7.7, handlebars@npm:^4.7.8":
   version: 4.7.8
   resolution: "handlebars@npm:4.7.8"
   dependencies:
@@ -3897,6 +3897,7 @@ __metadata:
     cspell: "npm:^9.7.0"
     esbuild: "npm:^0.27.3"
     eslint: "npm:^10.0.2"
+    handlebars: "npm:^4.7.8"
     husky: "npm:^9.1.7"
     lint-staged: "npm:^16.3.2"
     markdownlint-cli2: "npm:^0.21.0"
