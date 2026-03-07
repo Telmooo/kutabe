@@ -1,33 +1,41 @@
-import typescriptEslint from "typescript-eslint";
+import { defineConfig } from "eslint/config";
+import eslint from "@eslint/js";
+import tseslint from "typescript-eslint";
 
-export default [
-  {
-    files: ["**/*.ts"],
-  },
-  {
-    plugins: {
-      "@typescript-eslint": typescriptEslint.plugin,
-    },
+export default defineConfig(
+  // Eslint recommended
+  eslint.configs.recommended,
 
+  // Typescript recommended
+  tseslint.configs.recommended,
+
+  // Node.js CJS build scripts
+  {
+    files: ["esbuild.js"],
     languageOptions: {
-      parser: typescriptEslint.parser,
-      ecmaVersion: 2022,
-      sourceType: "module",
+      globals: {
+        require: "readonly",
+        module: "readonly",
+        __dirname: "readonly",
+        __filename: "readonly",
+        process: "readonly",
+        console: "readonly",
+      },
+      sourceType: "commonjs",
     },
-
     rules: {
-      "@typescript-eslint/naming-convention": [
-        "warn",
-        {
-          selector: "import",
-          format: ["camelCase", "PascalCase"],
-        },
-      ],
-
-      curly: "warn",
-      eqeqeq: "warn",
-      "no-throw-literal": "warn",
-      semi: "warn",
+      "@typescript-eslint/no-require-imports": "off",
     },
   },
-];
+
+  // Global ignore
+  {
+    ignores: [
+      "dist/**",
+      "node_modules/**",
+      ".yarn/**",
+      ".pnp.cjs",
+      ".pnp.loader.mjs",
+    ],
+  },
+);

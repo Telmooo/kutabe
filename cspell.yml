@@ -1,0 +1,18 @@
+---
+name: "global"
+$schema: "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json"
+version: "0.2"
+language: "en"
+languageId: "javascript,javascriptreact,typescript,typescriptreact,markdown"
+files:
+  - "src/**/*"
+  - "public/**/*"
+  - "README.md"
+useGitignore: true
+dictionaries:
+  - "en-gb"
+  - "pt-pt"
+dictionaryDefinitions:
+  - name: "global-words"
+    path: "./dictionaries/global-words.txt"
+    addWords: true

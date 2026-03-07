@@ -14,8 +14,17 @@
   "scripts": {
     "build": "node esbuild.js",
     "package": "node esbuild.js --production",
-    "lint": "eslint src/",
-    "test": "vscode-test"
+    "typecheck": "tsc --pretty --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "lint:md": "markdownlint-cli2 '**/*.md'",
+    "lint:md:fix": "markdownlint-cli2 --fix '**/*.md'",
+    "spellcheck": "cspell --no-progress",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vscode-test",
+    "postinstall": "husky",
+    "release": "release-it"
   },
   "activationEvents": [
     "onLanguage:python",
@@ -78,7 +87,11 @@
     "handlebars": "^4.7.8"
   },
   "devDependencies": {
+    "@cspell/dict-en-gb": "^5.0.24",
+    "@cspell/dict-pt-pt": "^3.0.6",
+    "@eslint/js": "^10.0.1",
     "@release-it/conventional-changelog": "^10.0.5",
+    "@tsconfig/strictest": "^2.0.8",
     "@types/mocha": "^10.0.10",
     "@types/node": "^25.3.3",
     "@types/vscode": "^1.109.0",
