@@ -23,6 +23,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "visualizer": "pnpm dlx tsx scripts/visualizer/serve.ts",
+    "pretest": "tsc",
     "test": "vscode-test",
     "postinstall": "husky",
     "release": "release-it"
