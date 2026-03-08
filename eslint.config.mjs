@@ -36,6 +36,8 @@ export default defineConfig(
       ".yarn/**",
       ".pnp.cjs",
       ".pnp.loader.mjs",
+      "out/**",
+      ".vscode-test/**",
     ],
   },
 );

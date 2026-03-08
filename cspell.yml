@@ -11,7 +11,10 @@ files:
 useGitignore: true
 dictionaries:
   - "en-gb"
+  - "global-words"
+  - "rust"
   - "pt-pt"
+  - "python"
 dictionaryDefinitions:
   - name: "global-words"
     path: "./dictionaries/global-words.txt"

@@ -1,5 +1,8 @@
+templates/**/*.hbs
+
 node_modules/
 .yarn/
 yarn.lock
 .pnp.cjs
 .pnp.loader.mjs
+pnpm-lock.yaml
