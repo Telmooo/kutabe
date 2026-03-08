@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kutabe AST Visualizer</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #1e1e2e;
+        --bg-surface: #181825;
+        --bg-hover: rgba(255, 255, 255, 0.04);
+        --bg-active: rgba(89, 139, 246, 0.15);
+        --text: #cdd6f4;
+        --text-dim: #6c7086;
+        --blue: #89b4fa;
+        --purple: #cba6f7;
+        --green: #a6e3a1;
+        --red: #f38ba8;
+        --yellow: #f9e2af;
+        --gray: #585b70;
+        --highlight: rgba(249, 226, 175, 0.25);
+        --border: #313244;
+        --font-mono:
+          "Fira Code", "Cascadia Code", "JetBrains Mono", "Consolas", monospace;
+        --font-size: 13px;
+        --line-height: 1.6;
+      }
+
+      html,
+      body {
+        height: 100%;
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font-mono);
+        font-size: var(--font-size);
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* -- Header -- */
+      header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+
+      header h1 {
+        font-size: 14px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      header select,
+      header label {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--text);
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 4px 8px;
+        cursor: pointer;
+      }
+
+      header label {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        border: none;
+        background: none;
+        user-select: none;
+      }
+
+      .header-spacer {
+        flex: 1;
+      }
+
+      #status {
+        font-size: 11px;
+        color: var(--text-dim);
+      }
+
+      .toolbar {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .toolbar button {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--text-dim);
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 2px 8px;
+        cursor: pointer;
+      }
+
+      .toolbar button:hover {
+        color: var(--text);
+        border-color: var(--gray);
+      }
+
+      /* -- Main -- */
+      main {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        min-height: 0;
+      }
+
+      .panel {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .panel-header {
+        font-size: 11px;
+        color: var(--text-dim);
+        padding: 6px 12px;
+        border-bottom: 1px solid var(--border);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        flex-shrink: 0;
+      }
+
+      /* -- Source panel -- */
+      #source-panel {
+        border-right: 1px solid var(--border);
+      }
+
+      #source-container {
+        position: relative;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      #source-backdrop,
+      #source-input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        font-family: var(--font-mono);
+        font-size: var(--font-size);
+        line-height: var(--line-height);
+        padding: 12px;
+        margin: 0;
+        border: none;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        overflow: auto;
+        tab-size: 4;
+      }
+
+      #source-backdrop {
+        color: transparent;
+        background: var(--bg-surface);
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      #source-backdrop mark {
+        background: var(--highlight);
+        color: transparent;
+        border-radius: 2px;
+      }
+
+      #source-input {
+        color: var(--text);
+        background: transparent;
+        z-index: 1;
+        resize: none;
+        outline: none;
+        caret-color: var(--yellow);
+      }
+
+      #source-input::selection {
+        background: rgba(137, 180, 250, 0.3);
+      }
+
+      /* -- AST panel -- */
+      #ast-panel .panel-content {
+        flex: 1;
+        overflow: auto;
+        padding: 8px 0;
+        min-height: 0;
+      }
+
+      .ast-node {
+        padding-left: 18px;
+      }
+
+      .ast-node-header {
+        display: flex;
+        align-items: baseline;
+        gap: 5px;
+        padding: 1px 8px 1px 0;
+        border-radius: 3px;
+        cursor: pointer;
+        white-space: nowrap;
+        line-height: 1.55;
+      }
+
+      .ast-node-header:hover {
+        background: var(--bg-hover);
+      }
+
+      .ast-node-header.active {
+        background: var(--bg-active);
+      }
+
+      .toggle {
+        display: inline-block;
+        width: 14px;
+        text-align: center;
+        font-size: 10px;
+        color: var(--text-dim);
+        flex-shrink: 0;
+        user-select: none;
+      }
+
+      .ast-node.collapsed > .ast-node-header .toggle::after {
+        content: "\25B6"; /* right arrow */
+      }
+
+      .ast-node:not(.collapsed) > .ast-node-header .toggle::after {
+        content: "\25BC"; /* down arrow */
+      }
+
+      .toggle-spacer {
+        display: inline-block;
+        width: 14px;
+        flex-shrink: 0;
+      }
+
+      .field-name {
+        color: var(--purple);
+      }
+
+      .node-type {
+        color: var(--blue);
+      }
+
+      .node-type.anonymous {
+        color: var(--gray);
+      }
+
+      .node-type.error {
+        color: var(--red);
+        font-weight: 700;
+      }
+
+      .node-pos {
+        color: var(--text-dim);
+        font-size: 11px;
+      }
+
+      .node-text {
+        color: var(--green);
+        font-size: 12px;
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .ast-node.collapsed > .ast-children {
+        display: none;
+      }
+
+      .ast-placeholder {
+        color: var(--text-dim);
+        padding: 24px 16px;
+        font-style: italic;
+      }
+
+      /* Hide anonymous nodes when filter is active */
+      .hide-anonymous .ast-node-header[data-anonymous="true"] {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Kutabe AST Visualizer</h1>
+      <select id="language-selector">
+        <option value="python">Python</option>
+        <option value="typescript">TypeScript</option>
+        <option value="javascript">JavaScript</option>
+        <option value="rust">Rust</option>
+      </select>
+      <label>
+        <input type="checkbox" id="named-only" />
+        Named only
+      </label>
+      <div class="header-spacer"></div>
+      <div class="toolbar">
+        <button id="btn-expand">Expand all</button>
+        <button id="btn-collapse">Collapse all</button>
+      </div>
+      <span id="status">Loading...</span>
+    </header>
+    <main>
+      <div id="source-panel" class="panel">
+        <div class="panel-header">Source</div>
+        <div id="source-container">
+          <div id="source-backdrop"></div>
+          <textarea
+            id="source-input"
+            spellcheck="false"
+            autocomplete="off"
+          ></textarea>
+        </div>
+      </div>
+      <div id="ast-panel" class="panel">
+        <div class="panel-header">AST</div>
+        <div class="panel-content" id="ast-tree">
+          <div class="ast-placeholder">Loading grammars...</div>
+        </div>
+      </div>
+    </main>
+
+    <script type="module">
+      // -- Imports & elements --
+      import { Parser, Language } from "/web-tree-sitter.js";
+
+      const sourceInput = document.getElementById("source-input");
+      const sourceBackdrop = document.getElementById("source-backdrop");
+      const astTree = document.getElementById("ast-tree");
+      const languageSelector = document.getElementById("language-selector");
+      const namedOnlyCheckbox = document.getElementById("named-only");
+      const statusEl = document.getElementById("status");
+      const btnExpand = document.getElementById("btn-expand");
+      const btnCollapse = document.getElementById("btn-collapse");
+
+      // -- Sample code per language --
+      const SAMPLES = {
+        python: `class Calculator:
+    def add(self, x: int, y: int = 0) -> int:
+        return x + y
+
+def greet(name: str, greeting: str = "Hello") -> str:
+    return f"{greeting}, {name}!"
+
+def no_hints(a, b):
+    return a + b`,
+
+        typescript: `function add(x: number, y: number): number {
+  return x + y;
+}
+
+const greet = (name: string, greeting: string = "Hello"): string => {
+  return \`\${greeting}, \${name}!\`;
+};
+
+class Calculator {
+  multiply(a: number, b: number): number {
+    return a * b;
+  }
+}`,
+
+        javascript: `function add(x, y) {
+  return x + y;
+}
+
+const greet = (name, greeting = "Hello") => {
+  return \`\${greeting}, \${name}!\`;
+};
+
+class Calculator {
+  multiply(a, b) {
+    return a * b;
+  }
+}`,
+
+        rust: `fn add(x: i32, y: i32) -> i32 {
+    x + y
+}
+
+struct Calculator {
+    value: f64,
+}
+
+impl Calculator {
+    fn new(value: f64) -> Self {
+        Self { value }
+    }
+
+    fn add(&self, other: f64) -> f64 {
+        self.value + other
+    }
+}`,
+      };
+
+      // -- Initialize tree-sitter --
+      statusEl.textContent = "Initializing...";
+
+      await Parser.init({
+        locateFile: (scriptName) => `/wasm/${scriptName}`,
+      });
+
+      const grammars = new Map();
+      const LANGUAGES = ["python", "typescript", "javascript", "rust"];
+
+      for (const lang of LANGUAGES) {
+        try {
+          grammars.set(
+            lang,
+            await Language.load(`/wasm/tree-sitter-${lang}.wasm`),
+          );
+        } catch (err) {
+          console.warn(`Failed to load ${lang} grammar:`, err);
+          // Disable the option in the selector
+          const opt = languageSelector.querySelector(`option[value="${lang}"]`);
+          if (opt) {
+            opt.disabled = true;
+            opt.textContent += " (unavailable)";
+          }
+        }
+      }
+
+      const parser = new Parser();
+      let currentTree = null;
+      // Map from "startIndex-endIndex" to DOM element for fast lookup
+      let nodeElementMap = new Map();
+
+      function setLanguage(lang) {
+        const grammar = grammars.get(lang);
+        if (grammar) {
+          parser.setLanguage(grammar);
+          return true;
+        }
+        return false;
+      }
+
+      // Set initial language
+      setLanguage("python");
+      sourceInput.value = SAMPLES.python;
+      statusEl.textContent = "Ready";
+
+      // -- Helpers --
+      function escapeHtml(str) {
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+
+      // -- Parse & render --
+      let debounceTimer = null;
+
+      function scheduleParseAndRender() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(parseAndRender, 150);
+      }
+
+      function parseAndRender() {
+        const text = sourceInput.value;
+        if (!text.trim()) {
+          currentTree = null;
+          astTree.innerHTML =
+            '<div class="ast-placeholder">Enter code to see the AST</div>';
+          nodeElementMap.clear();
+          clearHighlight();
+          return;
+        }
+
+        const start = performance.now();
+        currentTree = parser.parse(text);
+        const elapsed = performance.now() - start;
+        statusEl.textContent = `Parsed in ${elapsed.toFixed(1)}ms`;
+        renderAST(currentTree.rootNode);
+      }
+
+      function renderAST(rootNode) {
+        astTree.innerHTML = "";
+        nodeElementMap.clear();
+
+        const fragment = document.createDocumentFragment();
+        fragment.appendChild(buildNodeElement(rootNode, null));
+        astTree.appendChild(fragment);
+      }
+
+      function buildNodeElement(node, fieldName) {
+        const div = document.createElement("div");
+        div.className = "ast-node";
+
+        const header = document.createElement("span");
+        header.className = "ast-node-header";
+        header.dataset.startIndex = node.startIndex;
+        header.dataset.endIndex = node.endIndex;
+        header.dataset.startRow = node.startPosition.row;
+        header.dataset.startCol = node.startPosition.column;
+        header.dataset.endRow = node.endPosition.row;
+        header.dataset.endCol = node.endPosition.column;
+        header.dataset.anonymous = !node.isNamed;
+
+        const hasChildren = node.childCount > 0;
+
+        let html = "";
+
+        // Toggle or spacer
+        if (hasChildren) {
+          html += '<span class="toggle"></span>';
+        } else {
+          html += '<span class="toggle-spacer"></span>';
+        }
+
+        // Field name
+        if (fieldName) {
+          html += `<span class="field-name">${escapeHtml(fieldName)}:&nbsp;</span>`;
+        }
+
+        // Node type
+        const typeClass = node.isNamed
+          ? node.type === "ERROR"
+            ? "error"
+            : ""
+          : "anonymous";
+        html += `<span class="node-type ${typeClass}">${escapeHtml(node.type)}</span>`;
+
+        // Position
+        html += ` <span class="node-pos">[${node.startPosition.row}:${node.startPosition.column}-${node.endPosition.row}:${node.endPosition.column}]</span>`;
+
+        // Leaf text
+        if (!hasChildren) {
+          const text =
+            node.text.length > 80
+              ? node.text.slice(0, 80) + "\u2026"
+              : node.text;
+          html += ` <span class="node-text">"${escapeHtml(text)}"</span>`;
+        }
+
+        header.innerHTML = html;
+        div.appendChild(header);
+
+        // Store reference for bidirectional lookup
+        const key = `${node.startIndex}-${node.endIndex}`;
+        nodeElementMap.set(key, header);
+
+        // Children
+        if (hasChildren) {
+          const childrenDiv = document.createElement("div");
+          childrenDiv.className = "ast-children";
+          for (let i = 0; i < node.childCount; i++) {
+            const child = node.child(i);
+            const childField = node.fieldNameForChild(i);
+            childrenDiv.appendChild(buildNodeElement(child, childField));
+          }
+          div.appendChild(childrenDiv);
+        }
+
+        return div;
+      }
+
+      // -- Collapse / expand --
+      astTree.addEventListener("click", (e) => {
+        const header = e.target.closest(".ast-node-header");
+        if (!header) return;
+
+        const toggle = e.target.closest(".toggle");
+        const nodeDiv = header.parentElement;
+
+        if (toggle && nodeDiv.querySelector(".ast-children")) {
+          nodeDiv.classList.toggle("collapsed");
+          return;
+        }
+
+        // Highlight the source range
+        highlightFromAST(header);
+      });
+
+      btnExpand.addEventListener("click", () => {
+        astTree
+          .querySelectorAll(".ast-node.collapsed")
+          .forEach((n) => n.classList.remove("collapsed"));
+      });
+
+      btnCollapse.addEventListener("click", () => {
+        astTree.querySelectorAll(".ast-node").forEach((n) => {
+          if (n.querySelector(".ast-children")) {
+            n.classList.add("collapsed");
+          }
+        });
+      });
+
+      // -- Named only filter --
+      namedOnlyCheckbox.addEventListener("change", () => {
+        astTree.classList.toggle("hide-anonymous", namedOnlyCheckbox.checked);
+      });
+
+      // -- AST -> Source highlighting --
+      let activeHeader = null;
+
+      function highlightFromAST(header) {
+        const startIdx = Number(header.dataset.startIndex);
+        const endIdx = Number(header.dataset.endIndex);
+
+        // Update backdrop
+        updateBackdropHighlight(startIdx, endIdx);
+
+        // Set textarea selection
+        sourceInput.focus();
+        sourceInput.setSelectionRange(startIdx, endIdx);
+
+        // Mark active node
+        setActiveHeader(header);
+      }
+
+      function setActiveHeader(header) {
+        if (activeHeader) activeHeader.classList.remove("active");
+        activeHeader = header;
+        if (header) header.classList.add("active");
+      }
+
+      // -- Source -> AST highlighting --
+      function highlightFromSource() {
+        if (!currentTree) return;
+
+        const pos = sourceInput.selectionStart;
+        const node = currentTree.rootNode.descendantForIndex(pos);
+        if (!node) return;
+
+        const key = `${node.startIndex}-${node.endIndex}`;
+        const header = nodeElementMap.get(key);
+        if (!header) return;
+
+        // Expand parents so the node is visible
+        let parent = header.closest(".ast-node");
+        while (parent) {
+          parent.classList.remove("collapsed");
+          parent = parent.parentElement?.closest(".ast-node");
+        }
+
+        setActiveHeader(header);
+        header.scrollIntoView({ block: "nearest", behavior: "smooth" });
+
+        // Update backdrop highlight
+        updateBackdropHighlight(node.startIndex, node.endIndex);
+      }
+
+      sourceInput.addEventListener("mouseup", highlightFromSource);
+      sourceInput.addEventListener("keyup", (e) => {
+        // Only react to navigation keys
+        if (
+          e.key.startsWith("Arrow") ||
+          e.key === "Home" ||
+          e.key === "End" ||
+          e.key === "PageUp" ||
+          e.key === "PageDown"
+        ) {
+          highlightFromSource();
+        }
+      });
+
+      // -- Backdrop highlight --
+      function updateBackdropHighlight(startIdx, endIdx) {
+        const text = sourceInput.value;
+        const before = escapeHtml(text.slice(0, startIdx));
+        const highlighted = escapeHtml(text.slice(startIdx, endIdx));
+        const after = escapeHtml(text.slice(endIdx));
+        sourceBackdrop.innerHTML = `${before}<mark>${highlighted}</mark>${after}`;
+      }
+
+      function clearHighlight() {
+        sourceBackdrop.innerHTML = escapeHtml(sourceInput.value);
+        setActiveHeader(null);
+      }
+
+      // -- Scroll sync --
+      sourceInput.addEventListener("scroll", () => {
+        sourceBackdrop.scrollTop = sourceInput.scrollTop;
+        sourceBackdrop.scrollLeft = sourceInput.scrollLeft;
+      });
+
+      // -- Language switching --
+      languageSelector.addEventListener("change", () => {
+        const lang = languageSelector.value;
+        if (setLanguage(lang)) {
+          sourceInput.value = SAMPLES[lang] ?? "";
+          clearHighlight();
+          parseAndRender();
+        }
+      });
+
+      // -- Tab key inserts a tab character --
+      sourceInput.addEventListener("keydown", (e) => {
+        if (e.key === "Tab") {
+          e.preventDefault();
+          const start = sourceInput.selectionStart;
+          const end = sourceInput.selectionEnd;
+          sourceInput.value =
+            sourceInput.value.slice(0, start) +
+            "\t" +
+            sourceInput.value.slice(end);
+          sourceInput.selectionStart = sourceInput.selectionEnd = start + 1;
+          clearHighlight();
+          scheduleParseAndRender();
+        }
+      });
+
+      // -- Input handling --
+      sourceInput.addEventListener("input", () => {
+        clearHighlight();
+        scheduleParseAndRender();
+      });
+
+      // -- Initial parse --
+      parseAndRender();
+    </script>
+  </body>
+</html>
