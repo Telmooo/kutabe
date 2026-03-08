@@ -4,6 +4,7 @@ const path = require("path");
 
 const production = process.argv.includes("--production");
 const watch = process.argv.includes("--watch");
+const copyWasmOnly = process.argv.includes("--copy-wasm-only");
 
 const WASM_SOURCES = [
   "node_modules/web-tree-sitter/web-tree-sitter.wasm",
@@ -51,6 +52,10 @@ const esbuildProblemMatcherPlugin = {
 };
 
 async function main() {
+  copyWasmFiles();
+  if (copyWasmOnly) {
+    return;
+  }
   const ctx = await esbuild.context({
     entryPoints: ["src/extension.ts"],
     bundle: true,
@@ -67,7 +72,6 @@ async function main() {
       esbuildProblemMatcherPlugin,
     ],
   });
-  copyWasmFiles();
   if (watch) {
     await ctx.watch();
   } else {

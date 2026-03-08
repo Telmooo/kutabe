@@ -23,7 +23,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "visualizer": "pnpm dlx tsx scripts/visualizer/serve.ts",
-    "pretest": "tsc",
+    "pretest": "tsc && node esbuild.js --copy-wasm-only",
     "test": "vscode-test",
     "postinstall": "husky",
     "release": "release-it"
