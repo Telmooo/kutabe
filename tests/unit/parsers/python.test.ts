@@ -5,7 +5,7 @@ import { PythonParser } from "../../../src/parsers/python";
 const ROOT = path.resolve(__dirname, "../../../..");
 const parser = new PythonParser();
 
-suite("PythonParser", () => {
+suite("Python Parser", () => {
   suiteSetup(async () => {
     await parser.init(ROOT);
   });

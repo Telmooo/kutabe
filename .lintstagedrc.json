@@ -1,5 +1,10 @@
 {
-  "*.{js,ts}": ["pnpm lint:fix", "pnpm typecheck", "pnpm format", "pnpm test"],
+  "*.{js,ts}": [
+    "pnpm lint:fix",
+    "bash -c 'pnpm typecheck'",
+    "pnpm format",
+    "pnpm test"
+  ],
   "*.{json,yml,yaml}": ["pnpm format"],
   "*.{md,mdx}": ["pnpm lint:md:fix", "pnpm spellcheck"],
   "*.hbs": ["pnpm spellcheck", "pnpm test"]

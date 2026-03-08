@@ -5,7 +5,7 @@ import { TypeScriptParser } from "../../../src/parsers/typescript";
 const ROOT = path.resolve(__dirname, "../../../..");
 const parser = new TypeScriptParser();
 
-suite("TypeScriptParser", () => {
+suite("TypeScript Parser", () => {
   suiteSetup(async () => {
     await parser.init(ROOT);
   });

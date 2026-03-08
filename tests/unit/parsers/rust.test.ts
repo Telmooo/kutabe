@@ -5,7 +5,7 @@ import { RustParser } from "../../../src/parsers/rust";
 const ROOT = path.resolve(__dirname, "../../../..");
 const parser = new RustParser();
 
-suite("RustParser", () => {
+suite("Rust Parser", () => {
   suiteSetup(async () => {
     await parser.init(ROOT);
   });

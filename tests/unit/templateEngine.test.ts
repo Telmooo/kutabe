@@ -35,7 +35,7 @@ const indented: ParsedSymbol = {
   indentation: "    ",
 };
 
-suite("Template Engine tests", () => {
+suite("Template Engine", () => {
   test("python(google) - with params and return type", () => {
     const templateRender = renderTemplate(ROOT, "google", fn);
     assert.ok(templateRender.includes('"""'), "should have triple-quotes");
