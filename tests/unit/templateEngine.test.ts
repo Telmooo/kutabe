@@ -79,7 +79,7 @@ suite("Template Engine", () => {
     assert.ok(templateRender.includes(":rtype: float"), "should have :rtype:");
   });
 
-  test("jsdoc — params and return type", () => {
+  test("jsdoc - params and return type", () => {
     const templateRender = renderTemplate(ROOT, "jsdoc", fn);
     assert.ok(templateRender.includes("/**"), "should open with /**");
     assert.ok(
@@ -90,7 +90,7 @@ suite("Template Engine", () => {
     assert.ok(templateRender.includes("*/"), "should close with */");
   });
 
-  test("tsdoc — params (no types)", () => {
+  test("tsdoc - params (no types)", () => {
     const templateRender = renderTemplate(ROOT, "tsdoc", fn);
     assert.ok(
       templateRender.includes("@param x"),
@@ -102,7 +102,7 @@ suite("Template Engine", () => {
     );
   });
 
-  test("rustdoc — params and return type", () => {
+  test("rustdoc - params and return type", () => {
     const templateRender = renderTemplate(ROOT, "rustdoc", fn);
     assert.ok(templateRender.includes("///"), "should use /// comments");
     assert.ok(
