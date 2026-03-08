@@ -1,28 +1,78 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
+import { LanguageRegistry } from "./core/registry";
+import { PythonParser } from "./parsers/python";
+import { TypeScriptParser } from "./parsers/typescript";
+import { RustParser } from "./parsers/rust";
+import { PythonRenderer } from "./renderers/python";
+import { TypeScriptRenderer } from "./renderers/typescript";
+import { RustRenderer } from "./renderers/rust";
+import { generateDocstring } from "./commands/generateDocstring";
+import { KutabeCodeLensProvider } from "./providers/codeLensProvider";
+import { KutabeCodeActionProvider } from "./providers/codeActionProvider";
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
-  // Use the console to output diagnostic information (console.log) and errors (console.error)
-  // This line of code will only be executed once when your extension is activated
-  console.log('Congratulations, your extension "kutabe" is now active!');
+const DOCUMENT_SELECTOR: vscode.DocumentSelector = [
+  { language: "python" },
+  { language: "typescript" },
+  { language: "typescriptreact" },
+  { language: "javascript" },
+  { language: "javascriptreact" },
+  { language: "rust" },
+];
 
-  // The command has been defined in the package.json file
-  // Now provide the implementation of the command with registerCommand
-  // The commandId parameter must match the command field in package.json
-  const disposable = vscode.commands.registerCommand(
-    "kutabe.helloWorld",
-    () => {
-      // The code you place here will be executed every time your command is executed
-      // Display a message box to the user
-      vscode.window.showInformationMessage("Hello World from kutabe!");
-    },
+export async function activate(
+  context: vscode.ExtensionContext,
+): Promise<void> {
+  const extensionRoot = context.extensionUri.fsPath;
+  const registry = LanguageRegistry.getInstance();
+
+  const pythonParser = new PythonParser();
+  const tsParser = new TypeScriptParser();
+  const rustParser = new RustParser();
+
+  await Promise.all([pythonParser.init(), tsParser.init(), rustParser.init()]);
+
+  registry.registerParser(pythonParser);
+  registry.registerParser(tsParser);
+  registry.registerParser(rustParser);
+
+  const pythonRenderer = new PythonRenderer(extensionRoot);
+  const tsRenderer = new TypeScriptRenderer(extensionRoot);
+  const rustRenderer = new RustRenderer(extensionRoot);
+
+  for (const lang of pythonParser.languages) {
+    registry.registerRenderer(lang, pythonRenderer);
+  }
+  for (const lang of tsParser.languages) {
+    registry.registerRenderer(lang, tsRenderer);
+  }
+  for (const lang of rustParser.languages) {
+    registry.registerRenderer(lang, rustRenderer);
+  }
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "kutabe.generateDocstring",
+      generateDocstring,
+    ),
   );
 
-  context.subscriptions.push(disposable);
+  const codeLensProvider = new KutabeCodeLensProvider();
+
+  context.subscriptions.push(
+    vscode.languages.registerCodeLensProvider(
+      DOCUMENT_SELECTOR,
+      codeLensProvider,
+    ),
+    vscode.languages.registerCodeActionsProvider(
+      DOCUMENT_SELECTOR,
+      new KutabeCodeActionProvider(),
+      {
+        providedCodeActionKinds:
+          KutabeCodeActionProvider.providedCodeActionKinds,
+      },
+    ),
+    vscode.workspace.onDidChangeTextDocument(() => codeLensProvider.refresh()),
+  );
 }
 
-// This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate(): void {}

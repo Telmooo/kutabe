@@ -1,6 +1,11 @@
 import { Language, Node, Parser } from "web-tree-sitter";
 import type { Parser as IParser } from "./base";
-import { findEnclosingNode, initTreeSitter, wasmPath } from "./treeSitter";
+import {
+  collectNodes,
+  findEnclosingNode,
+  initTreeSitter,
+  wasmPath,
+} from "./treeSitter";
 import { Param, ParsedSymbol } from "../core/types";
 
 const SYMBOL_TYPES = [
@@ -19,13 +24,13 @@ export class TypeScriptParser implements IParser {
   ];
   private parsers = new Map<string, Parser>();
 
-  async init(extensionRoot: string): Promise<void> {
+  async init(): Promise<void> {
     if (this.parsers.size > 0) return;
 
-    await initTreeSitter(extensionRoot);
+    await initTreeSitter();
 
     const tsLanguage = await Language.load(
-      wasmPath(extensionRoot, "tree-sitter-typescript.wasm"),
+      wasmPath("tree-sitter-typescript.wasm"),
     );
     const tsParser = new Parser();
     tsParser.setLanguage(tsLanguage);
@@ -33,7 +38,7 @@ export class TypeScriptParser implements IParser {
     this.parsers.set("typescriptreact", tsParser);
 
     const jsLanguage = await Language.load(
-      wasmPath(extensionRoot, "tree-sitter-javascript.wasm"),
+      wasmPath("tree-sitter-javascript.wasm"),
     );
     const jsParser = new Parser();
     jsParser.setLanguage(jsLanguage);
@@ -55,6 +60,16 @@ export class TypeScriptParser implements IParser {
     if (!node) return null;
 
     return extractSymbol(node);
+  }
+
+  parseAllSymbols(source: string, languageId?: string): ParsedSymbol[] {
+    const parser = this.parsers.get(languageId ?? "typescript");
+    if (!parser) return [];
+
+    const tree = parser.parse(source);
+    if (!tree) return [];
+
+    return collectNodes(tree.rootNode, SYMBOL_TYPES).map(extractSymbol);
   }
 }
 

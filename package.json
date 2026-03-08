@@ -51,6 +51,15 @@
         "when": "editorTextFocus"
       }
     ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "kutabe.generateDocstring",
+          "when": "editorTextFocus && resourceLangId =~ /python|typescript|javascript|rust/",
+          "group": "1_modification"
+        }
+      ]
+    },
     "configuration": {
       "title": "Kutabe Configuration",
       "type": "object",

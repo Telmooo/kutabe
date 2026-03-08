@@ -1,13 +1,11 @@
 import assert from "assert";
-import path from "path";
 import { TypeScriptParser } from "../../../src/parsers/typescript";
 
-const ROOT = path.resolve(__dirname, "../../../..");
 const parser = new TypeScriptParser();
 
 suite("TypeScript Parser", () => {
   suiteSetup(async () => {
-    await parser.init(ROOT);
+    await parser.init();
   });
 
   test("parses a function declaration with types", () => {

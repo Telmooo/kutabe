@@ -1,6 +1,11 @@
 import { Language, Node, Parser } from "web-tree-sitter";
 import type { Parser as IParser } from "./base";
-import { findEnclosingNode, initTreeSitter, wasmPath } from "./treeSitter";
+import {
+  collectNodes,
+  findEnclosingNode,
+  initTreeSitter,
+  wasmPath,
+} from "./treeSitter";
 import { Param, ParsedSymbol } from "../core/types";
 
 const SYMBOL_TYPES = ["function_definition", "class_definition"];
@@ -10,13 +15,11 @@ export class PythonParser implements IParser {
   readonly languages = ["python"];
   private parser: Parser | null = null;
 
-  async init(extensionRoot: string): Promise<void> {
+  async init(): Promise<void> {
     if (this.parser) return;
 
-    await initTreeSitter(extensionRoot);
-    const language = await Language.load(
-      wasmPath(extensionRoot, "tree-sitter-python.wasm"),
-    );
+    await initTreeSitter();
+    const language = await Language.load(wasmPath("tree-sitter-python.wasm"));
     this.parser = new Parser();
     this.parser.setLanguage(language);
   }
@@ -29,6 +32,15 @@ export class PythonParser implements IParser {
     const node = findEnclosingNode(tree.rootNode, line, SYMBOL_TYPES);
     if (!node) return null;
     return extractSymbol(node);
+  }
+
+  parseAllSymbols(source: string): ParsedSymbol[] {
+    if (!this.parser) return [];
+
+    const tree = this.parser.parse(source);
+    if (!tree) return [];
+
+    return collectNodes(tree.rootNode, SYMBOL_TYPES).map(extractSymbol);
   }
 }
 

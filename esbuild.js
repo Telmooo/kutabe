@@ -15,18 +15,26 @@ const WASM_SOURCES = [
 ];
 
 function copyWasmFiles() {
-  const outDir = path.join(__dirname, "dist", "wasm");
-  fs.mkdirSync(outDir, { recursive: true });
-  for (const src of WASM_SOURCES) {
-    const fullSrc = path.join(__dirname, src);
-    if (!fs.existsSync(fullSrc)) {
-      console.warn(`⚠ WASM file not found: ${src}`);
-      continue;
+  // dist/wasm/ - used by the bundled extension
+  // out/src/parsers/wasm/ - used by the tsc-compiled test runner
+  const destinations = [
+    path.join(__dirname, "dist", "wasm"),
+    path.join(__dirname, "out", "src", "parsers", "wasm"),
+  ];
+
+  for (const outDir of destinations) {
+    fs.mkdirSync(outDir, { recursive: true });
+    for (const src of WASM_SOURCES) {
+      const fullSrc = path.join(__dirname, src);
+      if (!fs.existsSync(fullSrc)) {
+        console.warn(`⚠ WASM file not found: ${src}`);
+        continue;
+      }
+      const dest = path.join(outDir, path.basename(src));
+      fs.copyFileSync(fullSrc, dest);
     }
-    const dest = path.join(outDir, path.basename(src));
-    fs.copyFileSync(fullSrc, dest);
+    console.log(`[wasm] copied to ${path.relative(__dirname, outDir)}/`);
   }
-  console.log("[wasm] copied to dist/wasm/");
 }
 
 /**
@@ -66,6 +74,14 @@ async function main() {
     platform: "node",
     outfile: "dist/extension.js",
     external: ["vscode"],
+    alias: {
+      // Force the CJS build of web-tree-sitter so that import.meta.url is not
+      // referenced in the bundled output.
+      "web-tree-sitter": path.resolve(
+        __dirname,
+        "node_modules/web-tree-sitter/web-tree-sitter.cjs",
+      ),
+    },
     logLevel: "silent",
     plugins: [
       /* add to the end of plugins array */

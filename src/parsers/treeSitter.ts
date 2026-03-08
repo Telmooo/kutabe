@@ -1,16 +1,17 @@
 import * as path from "path";
 import { Node, Parser } from "web-tree-sitter";
 
-const WASM_DIR = "dist/wasm";
+// When bundled by esbuild (platform: node), __dirname resolves to the output
+// directory (dist/). WASM files are copied there by the build step.
+const WASM_DIR = path.join(__dirname, "wasm");
 
 let initPromise: Promise<void> | null = null;
 
-export function initTreeSitter(extensionRoot: string): Promise<void> {
+export function initTreeSitter(): Promise<void> {
   if (!initPromise) {
-    const wasmDir = path.join(extensionRoot, WASM_DIR);
     initPromise = Parser.init({
       locateFile(scriptName: string) {
-        return path.join(wasmDir, scriptName);
+        return path.join(WASM_DIR, scriptName);
       },
     });
   }
@@ -18,8 +19,22 @@ export function initTreeSitter(extensionRoot: string): Promise<void> {
   return initPromise;
 }
 
-export function wasmPath(extensionRoot: string, grammarFile: string): string {
-  return path.join(extensionRoot, WASM_DIR, grammarFile);
+export function wasmPath(grammarFile: string): string {
+  return path.join(WASM_DIR, grammarFile);
+}
+
+export function collectNodes(root: Node, targetTypes: string[]): Node[] {
+  const results: Node[] = [];
+  const walk = (node: Node): void => {
+    if (targetTypes.includes(node.type)) {
+      results.push(node);
+    }
+    for (const child of node.namedChildren) {
+      walk(child);
+    }
+  };
+  walk(root);
+  return results;
 }
 
 export function findEnclosingNode(

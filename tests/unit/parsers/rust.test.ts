@@ -1,13 +1,11 @@
 import assert from "assert";
-import path from "path";
 import { RustParser } from "../../../src/parsers/rust";
 
-const ROOT = path.resolve(__dirname, "../../../..");
 const parser = new RustParser();
 
 suite("Rust Parser", () => {
   suiteSetup(async () => {
-    await parser.init(ROOT);
+    await parser.init();
   });
 
   test("parses a free function with params and return type", () => {

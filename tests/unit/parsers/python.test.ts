@@ -1,13 +1,11 @@
 import assert from "assert";
-import path from "path";
 import { PythonParser } from "../../../src/parsers/python";
 
-const ROOT = path.resolve(__dirname, "../../../..");
 const parser = new PythonParser();
 
 suite("Python Parser", () => {
   suiteSetup(async () => {
-    await parser.init(ROOT);
+    await parser.init();
   });
 
   test("parses a simple function with type hints", () => {
