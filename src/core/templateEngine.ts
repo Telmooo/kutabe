@@ -10,6 +10,8 @@ const cache = new Map<string, CompiledTemplate>();
 function registerHelpers(): void {
   // {{eq a b}} - equality check for use in {{#if (eq style "google")}}
   Handlebars.registerHelper("eq", (a: unknown, b: unknown) => a === b);
+  // {{braces val}} - wraps value in curly braces (e.g. for JSDoc @param {type})
+  Handlebars.registerHelper("braces", (val: string) => `{${val}}`);
 }
 
 function loadTemplate(
