@@ -1,5 +1,6 @@
 {
-  "*.{js,ts}": ["yarn lint:fix", "yarn typecheck", "yarn format"],
-  "*.{json,yml,yaml}": ["yarn format"],
-  "*.{md,mdx}": ["yarn lint:md:fix", "yarn spellcheck"]
+  "*.{js,ts}": ["pnpm lint:fix", "pnpm typecheck", "pnpm format", "pnpm test"],
+  "*.{json,yml,yaml}": ["pnpm format"],
+  "*.{md,mdx}": ["pnpm lint:md:fix", "pnpm spellcheck"],
+  "*.hbs": ["pnpm spellcheck", "pnpm test"]
 }
