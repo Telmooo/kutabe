@@ -71,11 +71,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y xvfb
+      - name: Build Extension
+        run: pnpm build
       - name: Run tests (Linux)
         if: matrix.os == 'ubuntu-latest'
         run: xvfb-run -a pnpm test
       - name: Run tests (Windows)
         if: matrix.os == 'windows-latest'
         run: pnpm test
-      - name: Build Extension
-        run: pnpm build
