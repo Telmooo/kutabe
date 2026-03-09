@@ -1,6 +1,10 @@
 **
+!icon.png
 !LICENSE
 !README.md
 !CHANGELOG.md
 !package.json
 !pnpm-lock.yaml
+!templates/
+!dist/extension.js
+!dist/wasm

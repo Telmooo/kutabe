@@ -82,7 +82,7 @@ async function main() {
         "node_modules/web-tree-sitter/web-tree-sitter.cjs",
       ),
     },
-    logLevel: "silent",
+    logLevel: "warning",
     plugins: [
       /* add to the end of plugins array */
       esbuildProblemMatcherPlugin,

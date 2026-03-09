@@ -3,17 +3,32 @@
   "displayName": "Kutabe",
   "description": "Generate documentation from templates for Python, TypeScript, and Rust",
   "version": "0.0.1",
+  "publisher": "telmooo",
+  "repository": {
+    "url": "https://github.com/Telmooo/kutabe.git",
+    "type": "git"
+  },
+  "icon": "icon.png",
+  "license": "MIT",
+  "keywords": [
+    "docstring",
+    "documentation",
+    "python",
+    "javascript",
+    "typescript",
+    "rust"
+  ],
   "categories": [
     "Snippets",
     "Programming Languages"
   ],
   "engines": {
-    "vscode": "^1.109.0"
+    "vscode": "^1.110.0"
   },
   "main": "./dist/extension.js",
   "scripts": {
     "build": "node esbuild.js",
-    "package": "node esbuild.js --production",
+    "package": "node esbuild.js --production && vsce package --no-dependencies -o './dist/kutabe.vsix'",
     "typecheck": "tsc --pretty --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
@@ -103,16 +118,17 @@
     "web-tree-sitter": "^0.26.6"
   },
   "devDependencies": {
-    "@cspell/dict-en-gb": "^5.0.24",
+    "@cspell/dict-en-gb": "^5.0.25",
     "@cspell/dict-pt-pt": "^3.0.6",
     "@eslint/js": "^10.0.1",
     "@release-it/conventional-changelog": "^10.0.5",
     "@tsconfig/strictest": "^2.0.8",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^25.3.5",
-    "@types/vscode": "^1.109.0",
+    "@types/node": "^25.4.0",
+    "@types/vscode": "^1.110.0",
     "@vscode/test-cli": "^0.0.12",
     "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.7.1",
     "cspell": "^9.7.0",
     "esbuild": "^0.27.3",
     "eslint": "^10.0.3",
@@ -123,7 +139,7 @@
     "prettier": "^3.8.1",
     "release-it": "^19.2.4",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.56.1"
+    "typescript-eslint": "^8.57.0"
   },
   "packageManager": "pnpm@10.30.3"
 }

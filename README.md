@@ -1,5 +1,5 @@
 <div align="center">
-    <p><img src="assets/icon.svg" alt="kutabe" /></p>
+    <p><img src="https://raw.githubusercontent.com/Telmooo/kutabe/main/assets/banner.png" alt="kutabe" /></p>
     <span><i>A VSCode extension to automatically generate documentation</i></span>
 </div>
 
