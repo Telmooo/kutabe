@@ -194,7 +194,7 @@ pub fn divide(numerator: f64, denominator: f64) -> f64 {
 }
 
 // ---------------------------------------------------------------------------
-// 8. Trait implementation (bonus)
+// 8. Trait implementation
 // ---------------------------------------------------------------------------
 
 pub trait Describable {

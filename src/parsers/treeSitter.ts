@@ -41,13 +41,11 @@ export function findEnclosingNode(
   root: Node,
   line: number,
   targetTypes: string[],
+  source?: string,
 ): Node | null {
-  // Use a large column to land on actual code, not leading whitespace.
-  // This ensures indented symbols (e.g. methods inside class/impl) are found.
-  let node: Node | null = root.descendantForPosition({
-    row: line,
-    column: 256,
-  });
+  const lineText = source?.split("\n")[line] ?? "";
+  const column = lineText.length > 0 ? lineText.length - 1 : 0;
+  let node: Node | null = root.descendantForPosition({ row: line, column });
 
   while (node) {
     if (targetTypes.includes(node.type)) {

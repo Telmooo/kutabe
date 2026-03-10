@@ -29,7 +29,7 @@ export class PythonParser implements IParser {
 
     const tree = this.parser.parse(source);
     if (!tree) return null;
-    const node = findEnclosingNode(tree.rootNode, line, SYMBOL_TYPES);
+    const node = findEnclosingNode(tree.rootNode, line, SYMBOL_TYPES, source);
     if (!node) return null;
     return extractSymbol(node);
   }

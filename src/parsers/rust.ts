@@ -29,9 +29,9 @@ export class RustParser implements IParser {
 
     const tree = this.parser.parse(source);
     if (!tree) return null;
-    const node = findEnclosingNode(tree.rootNode, line, SYMBOL_TYPES);
+    const node = findEnclosingNode(tree.rootNode, line, SYMBOL_TYPES, source);
     if (!node) return null;
-    return extractSymbol(node);
+    return extractSymbol(node, source);
   }
 
   parseAllSymbols(source: string): ParsedSymbol[] {
@@ -40,18 +40,21 @@ export class RustParser implements IParser {
     const tree = this.parser.parse(source);
     if (!tree) return [];
 
-    return collectNodes(tree.rootNode, SYMBOL_TYPES).map(extractSymbol);
+    return collectNodes(tree.rootNode, SYMBOL_TYPES).map((n) =>
+      extractSymbol(n, source),
+    );
   }
 }
 
-function extractSymbol(node: Node): ParsedSymbol {
+function extractSymbol(node: Node, source: string): ParsedSymbol {
   const name = node.childForFieldName("name")?.text ?? "";
   const isMethod = hasImplParent(node);
   const params = extractParams(node);
   const returnType = node.childForFieldName("return_type")?.text;
 
   const startLine = node.startPosition.row;
-  const indentation = " ".repeat(node.startPosition.column);
+  const sourceLine = source.split("\n")[startLine] ?? "";
+  const indentation = sourceLine.match(/^(\s*)/)?.[1] ?? "";
 
   return {
     kind: isMethod ? "method" : "function",
