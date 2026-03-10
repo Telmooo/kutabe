@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.1](https://github.com/Telmooo/kutabe/compare/v0.1.0...v0.1.1) (2026-03-10)
+
+### Bug Fixes
+
+- code lens generation does not execute at detected line ([5df0e7c](https://github.com/Telmooo/kutabe/commit/5df0e7ced45a35377ebbe4d9a37f1cca1ff10a86))
+- excessive indentation on JS/TS inline functions ([abe576e](https://github.com/Telmooo/kutabe/commit/abe576e62b7e08af6cf2ca8ebb841b905d5cc164))
+- improve enclosing node resolving ([8496e12](https://github.com/Telmooo/kutabe/commit/8496e124a2f38de6a7aa8c4152a2c289c266f9c3))
+- wrong indentation for Python docstrings ([03557fc](https://github.com/Telmooo/kutabe/commit/03557fccb90978ff55d41b5bedbfecd4b0a457d5))
+
 ## 0.1.0 (2026-03-10)
 
 ### Features
