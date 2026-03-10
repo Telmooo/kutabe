@@ -25,7 +25,7 @@ function resolveInsertion(
   return { position, text: rendered + "\n" };
 }
 
-export async function generateDocstring(): Promise<void> {
+export async function generateDocstring(targetLine?: number): Promise<void> {
   const editor = vscode.window.activeTextEditor;
   if (!editor) return;
 
@@ -50,7 +50,7 @@ export async function generateDocstring(): Promise<void> {
   }
 
   const source = document.getText();
-  const line = selection.active.line;
+  const line = targetLine ?? selection.active.line;
   const symbol = parser.parseSymbolAtLine(source, line);
 
   if (!symbol) {

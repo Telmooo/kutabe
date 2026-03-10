@@ -85,6 +85,7 @@ export class KutabeCodeLensProvider implements vscode.CodeLensProvider {
           title: "$(pencil) Generate Docstring",
           command: "kutabe.generateDocstring",
           tooltip: `Generate docstring for ${symbol.kind} "${symbol.name}"`,
+          arguments: [symbol.startLine],
         });
       });
   }
