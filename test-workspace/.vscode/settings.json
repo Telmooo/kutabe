@@ -1,0 +1,10 @@
+{
+  // Python docstring style: "google" | "numpy" | "sphinx"
+  "kutabe.python.style": "google",
+
+  // TypeScript/JavaScript doc comment style: "jsdoc" | "tsdoc"
+  "kutabe.typescript.style": "jsdoc",
+
+  // Rust doc comment style: "rustdoc"
+  "kutabe.rust.style": "rustdoc"
+}

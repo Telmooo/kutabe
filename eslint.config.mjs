@@ -38,6 +38,7 @@ export default defineConfig(
       ".pnp.loader.mjs",
       "out/**",
       ".vscode-test/**",
+      "test-workspace/**",
     ],
   },
 );
