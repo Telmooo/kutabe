@@ -12,7 +12,7 @@
 
 ## What it does?
 
-Kutabe generates docstring and doc comments for functions and classes directly in the editor.
+Kutabe generates docstrings and doc comments for functions and classes directly in the editor.
 
 It supports Python, TypeScript, JavaScript, and Rust out of the box.
 

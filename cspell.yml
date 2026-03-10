@@ -12,6 +12,7 @@ files:
 useGitignore: true
 dictionaries:
   - "cpp"
+  - "cpp-compound-words"
   - "en-gb"
   - "global-words"
   - "rust"
