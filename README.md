@@ -1,6 +1,13 @@
 <div align="center">
     <p><img src="https://raw.githubusercontent.com/Telmooo/kutabe/main/assets/banner.png" alt="kutabe" /></p>
     <span><i>A VSCode extension to automatically generate documentation</i></span>
+    <br/><br/>
+
+[![CI](https://github.com/Telmooo/kutabe/actions/workflows/ci.yml/badge.svg)](https://github.com/Telmooo/kutabe/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/github/license/Telmooo/kutabe)](https://opensource.org/licenses/MIT)
+[![GitHub release](https://img.shields.io/github/v/release/Telmooo/kutabe)](https://github.com/Telmooo/kutabe/releases)
+[![Open VSX](https://img.shields.io/open-vsx/v/telmooo/kutabe)](https://open-vsx.org/extension/telmooo/kutabe)
+
 </div>
 
 ## What it does?

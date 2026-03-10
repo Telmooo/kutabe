@@ -1,15 +1,19 @@
 {
   "git": {
-    "commitMessage": "chore(release): version ${version}",
+    "commitMessage": "chore(release): version ${version} [skip ci]",
     "tagName": "v${version}",
     "requireCleanWorkingDir": true
   },
   "github": {
     "release": true,
-    "releaseName": "v${version}"
+    "releaseName": "v${version}",
+    "assets": ["dist/kutabe.vsix"]
   },
   "npm": {
     "publish": false
+  },
+  "hooks": {
+    "after:bump": "pnpm run package"
   },
   "plugins": {
     "@release-it/conventional-changelog": {
