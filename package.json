@@ -2,7 +2,7 @@
   "name": "kutabe",
   "displayName": "Kutabe",
   "description": "Generate documentation from templates for Python, TypeScript, and Rust",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "publisher": "telmooo",
   "repository": {
     "url": "https://github.com/Telmooo/kutabe.git",
