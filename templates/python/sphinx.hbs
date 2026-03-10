@@ -1,9 +1,12 @@
 """Summary.
+{{#if hasParams}}
+
 {{#each params}}
 :param {{name}}: Description.
 {{#if hasType}}:type {{name}}: {{type}}
 {{/if}}
 {{/each}}
+{{/if}}
 {{#if hasReturn}}
 :returns: Description.
 :rtype: {{returnType}}

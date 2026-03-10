@@ -7,9 +7,11 @@ languageId: "javascript,javascriptreact,typescript,typescriptreact,markdown"
 files:
   - "src/**/*"
   - "public/**/*"
+  - "templates/**/*"
   - "README.md"
 useGitignore: true
 dictionaries:
+  - "cpp"
   - "en-gb"
   - "global-words"
   - "rust"
