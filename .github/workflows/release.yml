@@ -1,6 +1,7 @@
 name: Release
 
 on:
+  workflow_dispatch:
   workflow_run:
     workflows:
       - "CI"
@@ -70,6 +71,10 @@ jobs:
         run: pnpm release --ci
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to VS Code Marketplace
+        if: env.SKIP != 'true'
+        run: pnpm vsce publish --packagePath dist/kutabe.vsix --pat ${{ secrets.MARKETPLACE_TOKEN }}
 
       - name: Publish to Open VSX
         if: env.SKIP != 'true'
