@@ -91,7 +91,7 @@ suite("Python Parser", () => {
 `;
     const result = parser.parseSymbolAtLine(source, 1);
     assert.ok(result);
-    assert.strictEqual(result.indentation, "    ");
+    assert.strictEqual(result.indentation, " ".repeat(8));
   });
 
   test("returns null for non-symbol lines", () => {

@@ -65,7 +65,7 @@ function extractSymbol(node: Node): ParsedSymbol {
     ? undefined
     : node.childForFieldName("return_type")?.text;
   const startLine = node.startPosition.row;
-  const indentation = " ".repeat(node.startPosition.column);
+  const indentation = " ".repeat(node.startPosition.column + 4);
 
   return {
     kind: isClass
