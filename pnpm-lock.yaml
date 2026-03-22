@@ -24,8 +24,8 @@ importers:
         specifier: ^0.23.2
         version: 0.23.2
       web-tree-sitter:
-        specifier: ^0.26.6
-        version: 0.26.6
+        specifier: ^0.26.7
+        version: 0.26.7
     devDependencies:
       '@cspell/dict-en-gb':
         specifier: ^5.0.25
@@ -3438,8 +3438,8 @@ packages:
     resolution: {integrity: sha512-3hu+tD8YzSLGuFYtPRb48vdhKMi0KQV5sn+uWr8+7dMEq/2G/dtLrdDinkLjqq5TIbIBjYJ4Ax/n3YiaW7QM8A==}
     engines: {node: 20 || >=22}
 
-  web-tree-sitter@0.26.6:
-    resolution: {integrity: sha512-fSPR7VBW/fZQdUSp/bXTDLT+i/9dwtbnqgEBMzowrM4U3DzeCwDbY3MKo0584uQxID4m/1xpLflrlT/rLIRPew==}
+  web-tree-sitter@0.26.7:
+    resolution: {integrity: sha512-KiZhelTvBA/ziUHEO7Emb75cGVAq8iGZNabYaZm53Zpy50NsXyOW+xSHlwHt5CVg/TRPZBfeVLTTobF0LjFJ1w==}
 
   whatwg-encoding@3.1.1:
     resolution: {integrity: sha512-6qN4hJdMwfYBtE3YBTTHhoeuUrDBPZmbQaxWAqSALV/MeEnR5z1xd8UKud2RAkFoPkmB+hli1TZSnyi84xz1vQ==}
@@ -7182,7 +7182,7 @@ snapshots:
 
   walk-up-path@4.0.0: {}
 
-  web-tree-sitter@0.26.6: {}
+  web-tree-sitter@0.26.7: {}
 
   whatwg-encoding@3.1.1:
     dependencies:
