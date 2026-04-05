@@ -136,7 +136,7 @@
     "glob": "^13.0.6",
     "husky": "^9.1.7",
     "lint-staged": "^16.3.4",
-    "markdownlint-cli2": "^0.21.0",
+    "markdownlint-cli2": "^0.22.0",
     "ovsx": "^0.10.9",
     "prettier": "^3.8.1",
     "release-it": "^19.2.4",
