@@ -47,7 +47,7 @@ jobs:
 
       - name: Install pnpm
         if: env.SKIP != 'true'
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6.0.8
 
       - name: Setup Node.js
         if: env.SKIP != 'true'
